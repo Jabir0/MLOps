@@ -1,8 +1,9 @@
 FROM tensorflow/serving:latest
 
-COPY ./output/serving_model /models/hearts-model
+COPY ./serving_model /models/hearts-model
 
 ENV MODEL_NAME=hearts-model
+ENV MODEL_BASE_PATH=/models
 ENV PORT=8501
 
 RUN echo '#!/bin/bash \n\n\
