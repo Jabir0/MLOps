@@ -7,15 +7,19 @@ COPY ./serving_model /models/serving_model
 # Set environment variables untuk TensorFlow Serving
 ENV MODEL_NAME=hearts-model
 ENV MODEL_BASE_PATH=/models/serving_model
-ENV PORT=8501 
+ENV GRPC_PORT=8500
+ENV REST_API_PORT=8501
 
 # Buat entrypoint script untuk menjalankan TensorFlow Serving
 RUN echo '#!/bin/bash \n\n\
     env \n\
-    tensorflow_model_server --port=8080 --rest_api_port=${PORT} \
+    tensorflow_model_server --grpc_port=${GRPC_PORT} --rest_api_port=${REST_API_PORT} \
     --model_name=${MODEL_NAME} --model_base_path=${MODEL_BASE_PATH} \
     "$@"' > /usr/bin/tf_serving_entrypoint.sh \
     && chmod +x /usr/bin/tf_serving_entrypoint.sh  
 
 # Expose port untuk gRPC dan REST API
-EXPOSE 8080 8501
+EXPOSE 8500 8501
+
+# Gunakan entrypoint script untuk menjalankan TensorFlow Serving
+ENTRYPOINT ["/usr/bin/tf_serving_entrypoint.sh"]
